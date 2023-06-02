@@ -6,13 +6,7 @@ pytest-freezegun
 .. image:: https://img.shields.io/pypi/v/pytest-freezegun.svg
     :target: https://pypi.python.org/pypi/pytest-freezegun/
 
-.. image:: https://travis-ci.org/ktosiek/pytest-freezegun.svg?branch=master
-    :target: https://travis-ci.org/ktosiek/pytest-freezegun
-    :alt: See Build Status on Travis CI
-
-.. image:: https://ci.appveyor.com/api/projects/status/github/ktosiek/pytest-freezegun?branch=master&svg=true
-    :target: https://ci.appveyor.com/project/ktosiek/pytest-freezegun/branch/master
-    :alt: See Build Status on AppVeyor
+‼️ This is a forked version of [pytest-freezegun](https://github.com/ktosiek/pytest-freezegun) as the original repo has not received attention in some years!
 
 Wrap tests with fixtures in freeze_time
 
@@ -29,7 +23,7 @@ Installation
 
 You can install "pytest-freezegun" via `pip`_ from `PyPI`_::
 
-    $ pip install pytest-freezegun
+    $ pip install pytest-freezegun-2
 
 
 Usage
@@ -114,8 +108,8 @@ This `Pytest`_ plugin was generated with `Cookiecutter`_ along with `@hackebrot`
 .. _`@hackebrot`: https://github.com/hackebrot
 .. _`MIT`: http://opensource.org/licenses/MIT
 .. _`cookiecutter-pytest-plugin`: https://github.com/pytest-dev/cookiecutter-pytest-plugin
-.. _`file an issue`: https://github.com/ktosiek/pytest-freezegun/issues
+.. _`file an issue`: https://github.com/kykyi/pytest-freezegun-2/issues
 .. _`pytest`: https://github.com/pytest-dev/pytest
-.. _`tox`: https://tox.readthedocs.io/en/latest/
+.. _`nox`: https://nox.thea.codes/en/stable/
 .. _`pip`: https://pypi.python.org/pypi/pip/
 .. _`PyPI`: https://pypi.python.org/pypi

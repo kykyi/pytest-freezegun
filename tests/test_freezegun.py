@@ -5,21 +5,25 @@ from datetime import datetime
 
 
 def test_freezing_time(testdir):
-    testdir.makepyfile("""
+    testdir.makepyfile(
+        """
         import pytest
+        import freezegun
         from datetime import date, datetime
 
         @pytest.mark.freeze_time('2017-05-20 15:42')
         def test_sth():
             assert datetime.now().date() == date(2017, 5, 20)
-    """)
+    """
+    )
 
-    result = testdir.runpytest('-v', '-s')
+    result = testdir.runpytest("-v", "-s")
     assert result.ret == 0
 
 
 def test_freezing_time_in_fixture(testdir):
-    testdir.makepyfile("""
+    testdir.makepyfile(
+        """
         import pytest
         from datetime import date, datetime
 
@@ -30,15 +34,17 @@ def test_freezing_time_in_fixture(testdir):
         @pytest.mark.freeze_time('2017-05-20 15:42')
         def test_sth(today):
             assert today == date(2017, 5, 20)
-    """)
+    """
+    )
 
-    result = testdir.runpytest('-v', '-s')
+    result = testdir.runpytest("-v", "-s")
     assert result.ret == 0
 
 
 def test_freezing_time_with_mark_and_fixture_used_by_test(testdir):
     # https://github.com/ktosiek/pytest-freezegun/issues/24
-    testdir.makepyfile("""
+    testdir.makepyfile(
+        """
         import pytest
         from datetime import date, datetime
 
@@ -49,26 +55,32 @@ def test_freezing_time_with_mark_and_fixture_used_by_test(testdir):
         @pytest.mark.freeze_time('2017-05-20 15:42')
         def test_sth(today, freezer):
             assert today == date(2017, 5, 20)
-    """)
+    """
+    )
 
-    result = testdir.runpytest('-v', '-s')
+    result = testdir.runpytest("-v", "-s")
     assert result.ret == 0
 
 
 def test_no_mark(testdir):
-    testdir.makepyfile("""
+    testdir.makepyfile(
+        """
         import datetime
 
         def test_sth():
             assert datetime.datetime.now() > {}
-    """.format(repr(datetime.now())))
+    """.format(
+            repr(datetime.now())
+        )
+    )
 
-    result = testdir.runpytest('-v', '-s')
+    result = testdir.runpytest("-v", "-s")
     assert result.ret == 0
 
 
 def test_move_to(testdir):
-    testdir.makepyfile("""
+    testdir.makepyfile(
+        """
         from datetime import date
         import pytest
 
@@ -78,9 +90,10 @@ def test_move_to(testdir):
             assert date.today() == date(2017, 5, 20)
             freezer.move_to('2017-05-21')
             assert date.today() == date(2017, 5, 21)
-    """)
+    """
+    )
 
-    result = testdir.runpytest('-v', '-s')
+    result = testdir.runpytest("-v", "-s")
     assert result.ret == 0
 
 
@@ -91,27 +104,32 @@ def test_fixture_durations(testdir):
     namely very large numbers for setup and very large
     NEGATIVE numbers for teardown.
     """
-    testdir.makepyfile("""
+    testdir.makepyfile(
+        """
         import pytest
         from datetime import date, datetime
 
         def test_truth(freezer):
             freezer.move_to('2000-01-01')
             assert True
-    """)
+    """
+    )
 
-    result = testdir.runpytest('-vv', '-s', '--durations=3')
+    result = testdir.runpytest("-vv", "-s", "--durations=3")
 
     # We don't have access to the actual terminalreporter,
     # so the only way to collect duration times is
     # to parse the pytest output.
-    DURATION_REGEX = re.compile(r'''
+    DURATION_REGEX = re.compile(
+        r"""
         (-?\d+\.\d+)s          # Time in seconds
         \s+                    # Whitespace
         (call|setup|teardown)  # Test phase
         \s+                    # Whitespace
         test_fixture_durations.py::test_truth  # Test ID
-    ''', re.X)
+    """,
+        re.X,
+    )
 
     durations = {}
     for line in result.outlines:
@@ -123,9 +141,9 @@ def test_fixture_durations(testdir):
 
     # It should take a non-negative amount of time for each of the steps,
     # but it also should never take longer than a second
-    assert 0 <= durations['setup'] <= 1
-    assert 0 <= durations['call'] <= 1
-    assert 0 <= durations['teardown'] <= 1
+    assert 0 <= durations["setup"] <= 1
+    assert 0 <= durations["call"] <= 1
+    assert 0 <= durations["teardown"] <= 1
 
 
 def test_marker_durations(testdir):
@@ -135,27 +153,32 @@ def test_marker_durations(testdir):
     namely very large numbers for setup and very large
     NEGATIVE numbers for teardown.
     """
-    testdir.makepyfile("""
+    testdir.makepyfile(
+        """
         import pytest
         from datetime import date, datetime
 
         @pytest.mark.freeze_time('2000-01-01')
         def test_truth():
             assert True
-    """)
+    """
+    )
 
-    result = testdir.runpytest('-vv', '-s', '--durations=3')
+    result = testdir.runpytest("-vv", "-s", "--durations=3")
 
     # We don't have access to the actual terminalreporter,
     # so the only way to collect duration times is
     # to parse the pytest output.
-    DURATION_REGEX = re.compile(r'''
+    DURATION_REGEX = re.compile(
+        r"""
         (-?\d+\.\d+)s          # Time in seconds
         \s+                    # Whitespace
         (call|setup|teardown)  # Test phase
         \s+                    # Whitespace
         test_marker_durations.py::test_truth  # Test ID
-    ''', re.X)
+    """,
+        re.X,
+    )
 
     durations = {}
     for line in result.outlines:
@@ -167,13 +190,14 @@ def test_marker_durations(testdir):
 
     # It should take a non-negative amount of time for each of the steps,
     # but it also should never take longer than a second
-    assert 0 <= durations['setup'] <= 1
-    assert 0 <= durations['call'] <= 1
-    assert 0 <= durations['teardown'] <= 1
+    assert 0 <= durations["setup"] <= 1
+    assert 0 <= durations["call"] <= 1
+    assert 0 <= durations["teardown"] <= 1
 
 
 def test_fixture_no_mark(testdir):
-    testdir.makepyfile("""
+    testdir.makepyfile(
+        """
         from datetime import datetime
         import time
 
@@ -183,14 +207,16 @@ def test_fixture_no_mark(testdir):
             later = datetime.now()
 
             assert now == later
-    """)
+    """
+    )
 
-    result = testdir.runpytest('-v', '-s')
+    result = testdir.runpytest("-v", "-s")
     assert result.ret == 0
 
 
 def test_fixture_freezes_time(testdir):
-    testdir.makepyfile("""
+    testdir.makepyfile(
+        """
         import time
 
         def test_fixture_freezes_time(freezer):
@@ -199,14 +225,16 @@ def test_fixture_freezes_time(testdir):
             later = time.time()
 
             assert now == later
-    """)
+    """
+    )
 
-    result = testdir.runpytest('-v', '-s')
+    result = testdir.runpytest("-v", "-s")
     assert result.ret == 0
 
 
 def test_marker_freezes_time(testdir):
-    testdir.makepyfile("""
+    testdir.makepyfile(
+        """
         import pytest
         import time
 
@@ -217,14 +245,16 @@ def test_marker_freezes_time(testdir):
             later = time.time()
 
             assert now == later
-    """)
+    """
+    )
 
-    result = testdir.runpytest('-v', '-s')
+    result = testdir.runpytest("-v", "-s")
     assert result.ret == 0
 
 
 def test_class_freezing_time(testdir):
-    testdir.makepyfile("""
+    testdir.makepyfile(
+        """
         import pytest
         from datetime import date, datetime
 
@@ -233,14 +263,16 @@ def test_class_freezing_time(testdir):
             @pytest.mark.freeze_time('2017-05-20 15:42')
             def test_sth(self):
                 assert datetime.now().date() == date(2017, 5, 20)
-    """)
+    """
+    )
 
-    result = testdir.runpytest('-v', '-s')
+    result = testdir.runpytest("-v", "-s")
     assert result.ret == 0
 
 
 def test_class_move_to(testdir):
-    testdir.makepyfile("""
+    testdir.makepyfile(
+        """
         from datetime import date
         import pytest
 
@@ -252,14 +284,16 @@ def test_class_move_to(testdir):
                 assert date.today() == date(2017, 5, 20)
                 freezer.move_to('2017-05-21')
                 assert date.today() == date(2017, 5, 21)
-    """)
+    """
+    )
 
-    result = testdir.runpytest('-v', '-s')
+    result = testdir.runpytest("-v", "-s")
     assert result.ret == 0
 
 
 def test_class_just_fixture(testdir):
-    testdir.makepyfile("""
+    testdir.makepyfile(
+        """
         from datetime import datetime
         import time
 
@@ -271,7 +305,8 @@ def test_class_just_fixture(testdir):
                 later = datetime.now()
 
                 assert now == later
-    """)
+    """
+    )
 
-    result = testdir.runpytest('-v', '-s')
+    result = testdir.runpytest("-v", "-s")
     assert result.ret == 0
