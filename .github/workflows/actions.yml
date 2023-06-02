@@ -20,4 +20,4 @@ jobs:
         pip install nox
     - name: Run Nox
       run: |
-        nox --session=py-${{ matrix.python-version }}
+        nox --session=tests-${{ matrix.python-version }}
